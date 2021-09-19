@@ -1,0 +1,27 @@
+{
+  "name": "tictactoe-typescript",
+  "version": "1.0.0",
+  "description": "the classic game of tic tac toe written in typescript",
+  "main": "build/index.js",
+  "scripts": {
+    "start": "npx tsc && node ./build/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LouisEiermann/tictactoe-typescript.git"
+  },
+  "keywords": [
+    "tic-tac-toe",
+    "typescript"
+  ],
+  "author": "louis eiermann",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/LouisEiermann/tictactoe-typescript/issues"
+  },
+  "homepage": "https://github.com/LouisEiermann/tictactoe-typescript#readme",
+  "devDependencies": {
+    "prettier": "^2.4.1",
+    "typescript": "^4.4.3"
+  }
+}
