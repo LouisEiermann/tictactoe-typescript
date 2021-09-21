@@ -1,3 +1,3 @@
-import {Client} from "./Client";
+import { GameClient } from "./GameClient";
 
-new Client()
+new GameClient();
