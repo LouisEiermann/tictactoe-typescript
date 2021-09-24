@@ -2,22 +2,17 @@ import { GameState } from "./GameState";
 const { Select } = require("enquirer");
 
 export class Match {
-  wincondition: boolean;
-  winner: string | null;
   gamestate: GameState;
 
   constructor() {
-    this.wincondition = false;
-    this.winner = null;
     this.gamestate = new GameState();
   }
 
-  start() {}
-  turn() {
+  startTurn() {
     this.gamestate.renderGameBoard();
     const prompt = new Select({
       name: "turn",
-      message: `Player ${this.gamestate.turn}'s Turn:`,
+      message: `Player ${this.gamestate.getPlayersTurn()}'s Turn:`,
       choices: [
         "Upper Left",
         "Upper Middle",
@@ -36,28 +31,43 @@ export class Match {
       .then((answer: string) => {
         switch (answer) {
           case "Upper Left":
-            return;
+            this.gamestate.updateBoardState(0, this.gamestate.getPlayersTurn());
+            break;
           case "Upper Middle":
-            return;
+            this.gamestate.updateBoardState(1, this.gamestate.getPlayersTurn());
+            break;
           case "Upper Right":
-            return;
+            this.gamestate.updateBoardState(2, this.gamestate.getPlayersTurn());
+            break;
           case "Center Left":
-            return;
+            this.gamestate.updateBoardState(3, this.gamestate.getPlayersTurn());
+            break;
           case "Center":
-            return;
+            this.gamestate.updateBoardState(4, this.gamestate.getPlayersTurn());
+            break;
           case "Center Right":
-            return;
+            this.gamestate.updateBoardState(5, this.gamestate.getPlayersTurn());
+            break;
           case "Lower Left":
-            return;
+            this.gamestate.updateBoardState(6, this.gamestate.getPlayersTurn());
+            break;
           case "Lower Middle":
-            return;
+            this.gamestate.updateBoardState(7, this.gamestate.getPlayersTurn());
+            break;
           case "Lower Right":
-            return;
+            this.gamestate.updateBoardState(8, this.gamestate.getPlayersTurn());
+            break;
         }
       })
-      .catch(console.error);
-    if (!this.wincondition) {
-      this.turn();
-    }
+      .then(() => {
+        this.gamestate.setPlayersTurn();
+        this.gamestate.updateWincondition();
+        if (!this.gamestate.winconditionMet) {
+          console.clear();
+          this.startTurn();
+        } else {
+          console.log(this.gamestate.getWinner() + "has won");
+        }
+      });
   }
 }

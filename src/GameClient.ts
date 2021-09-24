@@ -1,5 +1,5 @@
-import { GameState } from "./GameState";
 const { Select } = require("enquirer");
+import { Match } from "./Match";
 
 export class GameClient {
   constructor() {
@@ -25,12 +25,6 @@ export class GameClient {
       .catch(console.error);
   }
 
-  renderGameboard() {
-    let gameboard = new GameState();
-    let board = gameboard.renderGameBoard();
-    console.log(board);
-  }
-
   chooseGamemode() {
     const prompt = new Select({
       name: "gamemode selection",
@@ -44,17 +38,14 @@ export class GameClient {
         if (answer === "Play against AI") {
           return;
         } else {
-          this.startLocalMultiplayer;
+          this.startLocalMultiplayer();
         }
       })
       .catch(console.error);
   }
 
   startLocalMultiplayer() {
-    let wincondition = false;
-    let winner = "";
-    while (!wincondition) {
-      this.renderGameboard();
-    }
+    let match = new Match();
+    match.startTurn();
   }
 }
