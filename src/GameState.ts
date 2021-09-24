@@ -1,15 +1,17 @@
 export class GameState {
-  boardState: Array<"playerOne" | "playerTwo" | null>;
+  boardState: Array<string | null>;
   boardImage: string;
-  playersTurn: "playerOne" | "playerTwo";
+  playersTurn: { name: string; symbol: string } | null;
   winconditionMet: boolean;
-  winner: "playerOne" | "playerTwo" | null;
+  winner: { name: string; symbol: string } | null;
   winscenarios: Array<Array<number>>;
+  playerSymbols: Array<string>;
+  players: Array<{ name: string; symbol: string }>;
 
   constructor() {
     this.boardState = [null, null, null, null, null, null, null, null, null];
     this.boardImage = "";
-    this.playersTurn = "playerOne";
+    this.playersTurn = null;
     this.winconditionMet = false;
     this.winner = null;
     this.winscenarios = [
@@ -25,25 +27,47 @@ export class GameState {
       [0, 4, 8],
       [2, 4, 6],
     ];
+    this.playerSymbols = [
+      "x",
+      "o",
+      "§",
+      "$",
+      "%",
+      "&",
+      "?",
+      "#",
+      "+",
+      "-",
+      "*",
+    ];
+    this.players = [];
   }
 
-  updateBoardState(position: number, symbol: "playerOne" | "playerTwo"): void {
+  updateBoardState(position: number, symbol: string): void {
     this.boardState[position] = symbol;
   }
 
-  getPlayersTurn() {
-    return this.playersTurn;
+  getCurrentTurnsPlayer() {
+    if ((this.playersTurn = null)) {
+      return this.players[0];
+    } else {
+      return this.players[1];
+    }
   }
 
   getWinner() {
     return this.winner;
   }
 
-  setPlayersTurn() {
-    if (this.playersTurn === "playerOne") {
-      this.playersTurn = "playerTwo";
+  addPlayer(player: { name: string; symbol: string }) {
+    this.players.push(player);
+  }
+
+  switchTurns() {
+    if (this.playersTurn === this.players[0]) {
+      this.playersTurn = this.players[1];
     } else {
-      this.playersTurn = "playerOne";
+      this.playersTurn = this.players[0];
     }
   }
 

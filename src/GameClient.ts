@@ -46,6 +46,6 @@ export class GameClient {
 
   startLocalMultiplayer() {
     let match = new Match();
-    match.startTurn();
+    match.start();
   }
 }
