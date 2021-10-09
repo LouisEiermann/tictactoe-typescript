@@ -1,4 +1,5 @@
 import { GameState } from "./GameState";
+import { Player } from "./Player";
 const { Select, Input } = require("enquirer");
 
 export class Match {
@@ -12,7 +13,9 @@ export class Match {
   setupMatch() {
     if (this.gamestate.players.length < 2) {
       let index = this.gamestate.players.length + 1;
-      let player = { name: "", symbol: "" };
+
+      let playerName: string;
+      let playerSymbol: string;
 
       const namePrompt = new Input({
         name: "name selection",
@@ -21,7 +24,7 @@ export class Match {
       });
 
       namePrompt.run().then((answer: string) => {
-        player.name = answer;
+        playerName = answer;
 
         const symbolPrompt = new Select({
           name: "symbol selection",
@@ -42,8 +45,14 @@ export class Match {
             1
           );
 
-          player.symbol = answer;
-          this.gamestate.addPlayer(player);
+          playerSymbol = answer;
+
+          let playerToBeAdded = new Player();
+          playerToBeAdded.setName(playerName);
+          playerToBeAdded.setSymbol(playerSymbol);
+
+          this.gamestate.addPlayer(playerToBeAdded);
+
           this.setupMatch();
         });
       });
@@ -56,9 +65,9 @@ export class Match {
     this.gamestate.renderGameBoard();
     const prompt = new Select({
       name: "turn",
-      message: `Player ${
-        this.gamestate.players[this.gamestate.turnCounter].name
-      }'s Turn:`,
+      message: `Player ${this.gamestate.players[
+        this.gamestate.turnCounter
+      ].getName()}'s Turn:`,
       choices: this.gamestate.availablePositions,
     });
 
@@ -81,55 +90,55 @@ export class Match {
           case "Upper Left":
             this.gamestate.updateBoardState(
               0,
-              this.gamestate.players[this.gamestate.turnCounter].symbol
+              this.gamestate.players[this.gamestate.turnCounter].getSymbol()
             );
             break;
           case "Upper Middle":
             this.gamestate.updateBoardState(
               1,
-              this.gamestate.players[this.gamestate.turnCounter].symbol
+              this.gamestate.players[this.gamestate.turnCounter].getSymbol()
             );
             break;
           case "Upper Right":
             this.gamestate.updateBoardState(
               2,
-              this.gamestate.players[this.gamestate.turnCounter].symbol
+              this.gamestate.players[this.gamestate.turnCounter].getSymbol()
             );
             break;
           case "Center Left":
             this.gamestate.updateBoardState(
               3,
-              this.gamestate.players[this.gamestate.turnCounter].symbol
+              this.gamestate.players[this.gamestate.turnCounter].getSymbol()
             );
             break;
           case "Center":
             this.gamestate.updateBoardState(
               4,
-              this.gamestate.players[this.gamestate.turnCounter].symbol
+              this.gamestate.players[this.gamestate.turnCounter].getSymbol()
             );
             break;
           case "Center Right":
             this.gamestate.updateBoardState(
               5,
-              this.gamestate.players[this.gamestate.turnCounter].symbol
+              this.gamestate.players[this.gamestate.turnCounter].getSymbol()
             );
             break;
           case "Lower Left":
             this.gamestate.updateBoardState(
               6,
-              this.gamestate.players[this.gamestate.turnCounter].symbol
+              this.gamestate.players[this.gamestate.turnCounter].getSymbol()
             );
             break;
           case "Lower Middle":
             this.gamestate.updateBoardState(
               7,
-              this.gamestate.players[this.gamestate.turnCounter].symbol
+              this.gamestate.players[this.gamestate.turnCounter].getSymbol()
             );
             break;
           case "Lower Right":
             this.gamestate.updateBoardState(
               8,
-              this.gamestate.players[this.gamestate.turnCounter].symbol
+              this.gamestate.players[this.gamestate.turnCounter].getSymbol()
             );
             break;
         }
@@ -141,46 +150,35 @@ export class Match {
           if (this.gamestate.availablePositions.length === 0) {
             this.gamestate.renderGameBoard();
             console.log("Tie!");
-            const prompt = new Select({
-              name: "repeat",
-              message: "Rematch?",
-              choices: ["Yes", "No"],
-            });
-            prompt.run().then((answer: string) => {
-              if (answer === "Yes") {
-                this.gamestate.clearGameState();
-                console.clear();
-                this.setupMatch();
-              } else {
-                // Tidy up console after game ended
-                console.clear();
-                return;
-              }
-            });
+            this.askForRematch();
           } else {
             this.gamestate.switchTurns();
             this.gameloop();
           }
         } else {
           this.gamestate.renderGameBoard();
-          console.log(this.gamestate.getWinner()?.name + " has won");
-          const prompt = new Select({
-            name: "repeat",
-            message: "Rematch?",
-            choices: ["Yes", "No"],
-          });
-          prompt.run().then((answer: string) => {
-            if (answer === "Yes") {
-              this.gamestate.clearGameState();
-              console.clear();
-              this.setupMatch();
-            } else {
-              // Tidy up console after game ended
-              console.clear();
-              return;
-            }
-          });
+          console.log(this.gamestate.getWinner()?.getName() + " has won");
+          this.askForRematch();
         }
       });
+  }
+
+  askForRematch() {
+    const prompt = new Select({
+      name: "repeat",
+      message: "Rematch?",
+      choices: ["Yes", "No"],
+    });
+    prompt.run().then((answer: string) => {
+      if (answer === "Yes") {
+        this.gamestate.clearGameState();
+        console.clear();
+        this.setupMatch();
+      } else {
+        // Tidy up console after game ended
+        console.clear();
+        return;
+      }
+    });
   }
 }
