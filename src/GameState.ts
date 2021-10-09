@@ -65,6 +65,17 @@ export class GameState {
     this.turnCounter = 0;
     this.winconditionMet = false;
     this.winner = null;
+    this.availablePositions = [
+      "Upper Left",
+      "Upper Middle",
+      "Upper Right",
+      "Center Left",
+      "Center",
+      "Center Right",
+      "Lower Left",
+      "Lower Middle",
+      "Lower Right",
+    ];
   }
 
   getWinner() {

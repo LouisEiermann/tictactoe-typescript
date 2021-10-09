@@ -136,10 +136,31 @@ export class Match {
       })
       .then(() => {
         this.gamestate.updateWincondition();
+        console.clear();
         if (!this.gamestate.winconditionMet) {
-          console.clear();
-          this.gamestate.switchTurns();
-          this.gameloop();
+          if (this.gamestate.availablePositions.length === 0) {
+            this.gamestate.renderGameBoard();
+            console.log("Tie!");
+            const prompt = new Select({
+              name: "repeat",
+              message: "Rematch?",
+              choices: ["Yes", "No"],
+            });
+            prompt.run().then((answer: string) => {
+              if (answer === "Yes") {
+                this.gamestate.clearGameState();
+                console.clear();
+                this.setupMatch();
+              } else {
+                // Tidy up console after game ended
+                console.clear();
+                return;
+              }
+            });
+          } else {
+            this.gamestate.switchTurns();
+            this.gameloop();
+          }
         } else {
           this.gamestate.renderGameBoard();
           console.log(this.gamestate.getWinner()?.name + " has won");

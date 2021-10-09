@@ -19,32 +19,13 @@ export class GameClient {
         if (answer === "Quit") {
           return;
         } else {
-          this.chooseGamemode();
+          this.startMatch();
         }
       })
       .catch(console.error);
   }
 
-  chooseGamemode() {
-    const prompt = new Select({
-      name: "gamemode selection",
-      message: "Select Gamemode",
-      choices: ["Play against AI", "Play local Multiplayer"],
-    });
-
-    prompt
-      .run()
-      .then((answer: string) => {
-        if (answer === "Play against AI") {
-          return;
-        } else {
-          this.startLocalMultiplayer();
-        }
-      })
-      .catch(console.error);
-  }
-
-  startLocalMultiplayer() {
+  startMatch() {
     let match = new Match();
     match.setupMatch();
   }
