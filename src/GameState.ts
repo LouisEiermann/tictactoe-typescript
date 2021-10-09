@@ -1,17 +1,19 @@
 export class GameState {
   boardState: Array<string | null>;
   boardImage: string;
-  playersTurn: { name: string; symbol: string } | null;
+  players: Array<{ name: string; symbol: string }>;
+  turnCounter: 0 | 1;
   winconditionMet: boolean;
   winner: { name: string; symbol: string } | null;
   winscenarios: Array<Array<number>>;
-  playerSymbols: Array<string>;
-  players: Array<{ name: string; symbol: string }>;
+  playerSymbols: string[] = [];
+  availablePositions: string[] = [];
 
   constructor() {
     this.boardState = [null, null, null, null, null, null, null, null, null];
     this.boardImage = "";
-    this.playersTurn = null;
+    this.players = [];
+    this.turnCounter = 0;
     this.winconditionMet = false;
     this.winner = null;
     this.winscenarios = [
@@ -27,7 +29,7 @@ export class GameState {
       [0, 4, 8],
       [2, 4, 6],
     ];
-    this.playerSymbols = [
+    this.playerSymbols.push(
       "x",
       "o",
       "§",
@@ -38,21 +40,31 @@ export class GameState {
       "#",
       "+",
       "-",
-      "*",
-    ];
-    this.players = [];
+      "*"
+    );
+    this.availablePositions.push(
+      "Upper Left",
+      "Upper Middle",
+      "Upper Right",
+      "Center Left",
+      "Center",
+      "Center Right",
+      "Lower Left",
+      "Lower Middle",
+      "Lower Right"
+    );
   }
 
   updateBoardState(position: number, symbol: string): void {
     this.boardState[position] = symbol;
   }
 
-  getCurrentTurnsPlayer() {
-    if ((this.playersTurn = null)) {
-      return this.players[0];
-    } else {
-      return this.players[1];
-    }
+  clearGameState(): void {
+    this.boardState = [null, null, null, null, null, null, null, null, null];
+    this.boardImage = "";
+    this.turnCounter = 0;
+    this.winconditionMet = false;
+    this.winner = null;
   }
 
   getWinner() {
@@ -64,24 +76,29 @@ export class GameState {
   }
 
   switchTurns() {
-    if (this.playersTurn === this.players[0]) {
-      this.playersTurn = this.players[1];
+    if (this.turnCounter === 0) {
+      this.turnCounter = 1;
     } else {
-      this.playersTurn = this.players[0];
+      this.turnCounter = 0;
     }
   }
 
   updateWincondition() {
     for (let winscenario of this.winscenarios) {
       if (
-        this.boardState[winscenario[0]] &&
-        this.boardState[winscenario[1]] &&
-        this.boardState[winscenario[2]] === this.playersTurn
+        this.boardState[winscenario[0]] === this.players[0].symbol &&
+        this.boardState[winscenario[1]] === this.players[0].symbol &&
+        this.boardState[winscenario[2]] === this.players[0].symbol
       ) {
         this.winconditionMet = true;
-        this.winner = this.playersTurn;
-      } else {
-        return;
+        this.winner = this.players[this.turnCounter];
+      } else if (
+        this.boardState[winscenario[0]] === this.players[1].symbol &&
+        this.boardState[winscenario[1]] === this.players[1].symbol &&
+        this.boardState[winscenario[2]] === this.players[1].symbol
+      ) {
+        this.winconditionMet = true;
+        this.winner = this.players[this.turnCounter];
       }
     }
   }
@@ -92,16 +109,20 @@ export class GameState {
     for (let position of this.boardState) {
       if (position != null) {
         if (index === 3 || index === 6) {
-          this.boardImage = this.boardImage.concat(`\n[${this.playersTurn}]`);
+          this.boardImage = this.boardImage.concat(
+            `\n[${this.boardState[index]}]`
+          );
         } else {
-          this.boardImage = this.boardImage.concat(`[${this.playersTurn}]`);
+          this.boardImage = this.boardImage.concat(
+            `[${this.boardState[index]}]`
+          );
         }
         index++;
       } else {
         if (index === 3 || index === 6) {
-          this.boardImage = this.boardImage.concat(`\n[]`);
+          this.boardImage = this.boardImage.concat(`\n[ ]`);
         } else {
-          this.boardImage = this.boardImage.concat(`[]`);
+          this.boardImage = this.boardImage.concat(`[ ]`);
         }
         index++;
       }
